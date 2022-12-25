@@ -73,11 +73,11 @@ The REST API to the example app is described below.
 
 `GET /api/:imageName`
 
-    Resize parameters not specified, please try again.
+    localhost:3000/api/fjord
 
 ### Response
 
-    <img src="http://localhost:3000/api/fjord/?width=200&amp;height=200" alt="http://localhost:3000/api/fjord/?width=200&amp;height=200" class="shrinkToFit" width="196" height="196">
+    Resize parameters not specified, please try again.
 
 ## Get a non-existent Image
 
