@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { resizer } from './utilities/sharp';
+import path from 'path';
 import {
   getFullImages,
   getFullImage,
@@ -21,7 +22,7 @@ app.get(
   '/api/:imageName',
   [getFullImage, resizer, logger, getThumbImage],
   async (req: Request, res: Response) => {
-    res.sendFile(req.params.imageName, { root: './images/thumb' });
+    res.sendFile(req.params.imageName, { root: path.dirname(req.params.imagePath) });
   }
 );
 

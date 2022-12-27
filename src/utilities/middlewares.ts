@@ -51,8 +51,19 @@ export const getFullImage = async (
     res: Response,
     next: NextFunction
 ) => {
-    const imageName = req.params.imageName;
+    const imageName: string = req.params.imageName;
+    const resizedImageName: string = `${imageName}-${req.query.width}-${req.query.height}`
     let fullImageArray: { image: string, imagePath: string }[] = imageCache.get('fullImageArray')!;
+    let resizedImage: string[] = imageCache.get('resizedImage')! || ['', ''];
+    let cached: boolean = false;
+
+    if (path.parse(resizedImage[0]).name === resizedImageName) {
+        cached = true;
+        res.sendFile(resizedImage[0], { root: path.dirname(resizedImage[1]) });
+    }
+
+    // If image array is not in cache, get the array from getFullImages() & get the image 
+    // info that matches with the image name specified in the request parameter.
     if (!fullImageArray) {
         await getFullImages().then((image) => {
             fullImageArray = image;
@@ -65,13 +76,16 @@ export const getFullImage = async (
             imageCache.set('fullImageArray', image, 10000);
         });
     }
+    // Get image info from imageArray stored in the cache.
     fullImageArray.forEach((imageInfo) => {
         if (imageInfo.image.includes(imageName)) {
             req.params.imagePath = imageInfo.imagePath;
             req.params.imageName = imageInfo.image;
         }
     });
-    next();
+    if (cached === false) {
+        next();
+    }
 };
 
 export const getThumbImage = async (
@@ -79,15 +93,16 @@ export const getThumbImage = async (
     res: Response,
     next: NextFunction
 ) => {
-    const imageName = req.params.newImageName;
+    const imageName: string = req.params.imageName;
+    const imagePath: string = req.params.imagePath;
     let thumbImageArray: { image: string, imagePath: string }[] = imageCache.get('thumbImageArray')!;
     if (!thumbImageArray) {
         await getThumbImages().then((image) => {
             thumbImageArray = image;
             thumbImageArray.forEach((imageInfo) => {
                 if (imageInfo.image.includes(imageName)) {
-                    req.params.imagePath = imageInfo.imagePath;
-                    req.params.imageName = imageInfo.image;
+                    req.params.imagePath = imagePath;
+                    req.params.imageName = imageName;
                 }
             });
             imageCache.set('thumbImageArray', image, 10000);
@@ -95,8 +110,8 @@ export const getThumbImage = async (
     }
     thumbImageArray.forEach((imageInfo) => {
         if (imageInfo.image.includes(imageName)) {
-            req.params.imagePath = imageInfo.imagePath;
-            req.params.imageName = imageInfo.image;
+            req.params.imagePath = imagePath;
+            req.params.imageName = imageName;
         }
     });
     next();

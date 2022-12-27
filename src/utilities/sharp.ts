@@ -1,7 +1,7 @@
-import * as fs from 'fs';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 import sharp from 'sharp';
+import { imageCache } from './middlewares';
 
 export const resizer = async (
     req: Request,
@@ -22,6 +22,7 @@ export const resizer = async (
     const imageExtension = path.parse(req.params.imageName).ext;
     const newImageName = `${imageName}-${width}-${height}${imageExtension}`;
     const newImagePath = `images/thumb/${newImageName}`;
+
     try {
         if (!width || !height) {
             return res.send('Resize parameters not specified, please try again.');
@@ -32,8 +33,9 @@ export const resizer = async (
                 height: height
             })
             .toFile(newImagePath);
-        req.params.newImageName = newImageName;
-        req.params.newImagePath = newImagePath;
+        req.params.imageName = newImageName;
+        req.params.imagePath = newImagePath;
+        imageCache.set('resizedImage', [newImageName, newImagePath], 10000);
         next();
     } catch (error) {
         return res.send(`${error}`);
