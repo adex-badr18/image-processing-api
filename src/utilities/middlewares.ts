@@ -1,10 +1,9 @@
 import path from 'path';
 import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
-import sharp from 'sharp';
 import NodeCache from 'node-cache';
 
-const imageCache = new NodeCache();
+export const imageCache = new NodeCache();
 
 interface Image {
     image: string;

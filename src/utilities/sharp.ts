@@ -20,7 +20,7 @@ export const resizer = async (
     }
 
     const imageExtension = path.parse(req.params.imageName).ext;
-    const newImageName = `${imageName}-thumb${imageExtension}`;
+    const newImageName = `${imageName}-${width}-${height}${imageExtension}`;
     const newImagePath = `images/thumb/${newImageName}`;
     try {
         if (!width || !height) {
