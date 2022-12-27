@@ -14,8 +14,7 @@ export const resizer = async (
     const imageName =
         path.parse(req.params.imageName).name || req.params.imageName;
     if (!imageName || !imagePath) {
-        return res
-            .status(404)
+        return res.status(404)
             .send('No image matched your search. Please try again.');
     }
 

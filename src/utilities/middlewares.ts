@@ -3,26 +3,22 @@ import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import NodeCache from 'node-cache';
 
-export const imageCache = new NodeCache();
+export const imageCache: NodeCache = new NodeCache();
 
 interface Image {
     image: string;
     imagePath: string;
 }
 
-export const getFullImages = async () => {
-    const dirPath = 'images/full';
-    interface Image {
-        image: string;
-        imagePath: string;
-    }
+export const getFullImages = async (): Promise<Image[]> => {
+    const dirPath: string = 'images/full';
     const imageArray: Image[] = [];
 
     await fs.promises
         .readdir(dirPath)
         .then((names) => {
             names.forEach((image) => {
-                const imagePath = path.join(dirPath, image);
+                const imagePath: string = path.join(dirPath, image);
                 imageArray.push({ image, imagePath });
             });
         })
@@ -30,15 +26,15 @@ export const getFullImages = async () => {
     return imageArray;
 };
 
-export const getThumbImages = async () => {
-    const dirPath = 'images/thumb';
+export const getThumbImages = async (): Promise<Image[]> => {
+    const dirPath: string = 'images/thumb';
     const imageArray: Image[] = [];
 
     await fs.promises
         .readdir(dirPath)
         .then((names) => {
             names.forEach((image) => {
-                const imagePath = path.join(dirPath, image);
+                const imagePath: string = path.join(dirPath, image);
                 imageArray.push({ image, imagePath });
             });
         })
@@ -50,7 +46,7 @@ export const getFullImage = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     const imageName: string = req.params.imageName;
     const resizedImageName: string = `${imageName}-${req.query.width}-${req.query.height}`
     let fullImageArray: { image: string, imagePath: string }[] = imageCache.get('fullImageArray')!;
@@ -62,13 +58,16 @@ export const getFullImage = async (
         res.sendFile(resizedImage[0], { root: path.dirname(resizedImage[1]) });
     }
 
+    console.log(imageName);
     // If image array is not in cache, get the array from getFullImages() & get the image 
     // info that matches with the image name specified in the request parameter.
     if (!fullImageArray) {
         await getFullImages().then((image) => {
             fullImageArray = image;
             fullImageArray.forEach((imageInfo) => {
-                if (imageInfo.image.includes(imageName)) {
+                console.log(imageInfo.image);
+                if (path.parse(imageInfo.image).name === imageName) {
+                    console.log(imageInfo.image);
                     req.params.imagePath = imageInfo.imagePath;
                     req.params.imageName = imageInfo.image;
                 }
@@ -78,7 +77,7 @@ export const getFullImage = async (
     }
     // Get image info from imageArray stored in the cache.
     fullImageArray.forEach((imageInfo) => {
-        if (imageInfo.image.includes(imageName)) {
+        if (path.parse(imageInfo.image).name === imageName) {
             req.params.imagePath = imageInfo.imagePath;
             req.params.imageName = imageInfo.image;
         }
@@ -92,7 +91,7 @@ export const getThumbImage = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     const imageName: string = req.params.imageName;
     const imagePath: string = req.params.imagePath;
     let thumbImageArray: { image: string, imagePath: string }[] = imageCache.get('thumbImageArray')!;
@@ -100,7 +99,8 @@ export const getThumbImage = async (
         await getThumbImages().then((image) => {
             thumbImageArray = image;
             thumbImageArray.forEach((imageInfo) => {
-                if (imageInfo.image.includes(imageName)) {
+                console.log(imageInfo.image);
+                if (path.parse(imageInfo.image).name === imageName) {
                     req.params.imagePath = imagePath;
                     req.params.imageName = imageName;
                 }
@@ -109,7 +109,7 @@ export const getThumbImage = async (
         });
     }
     thumbImageArray.forEach((imageInfo) => {
-        if (imageInfo.image.includes(imageName)) {
+        if (path.parse(imageInfo.image).name === imageName) {
             req.params.imagePath = imagePath;
             req.params.imageName = imageName;
         }
@@ -117,7 +117,7 @@ export const getThumbImage = async (
     next();
 };
 
-export const logger = (req: Request, res: Response, next: NextFunction) => {
+export const logger = (req: Request, res: Response, next: NextFunction): void => {
     console.log('Image resize successful.');
     next();
 };
