@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from 'express';
+import { resizer } from './utilities/sharp';
 import {
   getFullImages,
   getFullImage,
-  resizer,
   getThumbImage,
   logger
 } from './utilities/middlewares';
