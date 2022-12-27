@@ -7,7 +7,7 @@ export const resizer = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<unknown> => {
     const width = Number(req.query.width);
     const height = Number(req.query.height);
     const imagePath = req.params.imagePath;

@@ -58,16 +58,13 @@ export const getFullImage = async (
         res.sendFile(resizedImage[0], { root: path.dirname(resizedImage[1]) });
     }
 
-    console.log(imageName);
     // If image array is not in cache, get the array from getFullImages() & get the image 
     // info that matches with the image name specified in the request parameter.
     if (!fullImageArray) {
         await getFullImages().then((image) => {
             fullImageArray = image;
             fullImageArray.forEach((imageInfo) => {
-                console.log(imageInfo.image);
                 if (path.parse(imageInfo.image).name === imageName) {
-                    console.log(imageInfo.image);
                     req.params.imagePath = imageInfo.imagePath;
                     req.params.imageName = imageInfo.image;
                 }
@@ -99,7 +96,6 @@ export const getThumbImage = async (
         await getThumbImages().then((image) => {
             thumbImageArray = image;
             thumbImageArray.forEach((imageInfo) => {
-                console.log(imageInfo.image);
                 if (path.parse(imageInfo.image).name === imageName) {
                     req.params.imagePath = imagePath;
                     req.params.imageName = imageName;
