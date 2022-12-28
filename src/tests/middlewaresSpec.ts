@@ -10,4 +10,3 @@ describe('Test suite for image retrievals', () => {
     expect(fullImagesArray).toBeTruthy();
   });
 });
-

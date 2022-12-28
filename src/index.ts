@@ -11,7 +11,7 @@ import {
 export const app: Express = express();
 const port = 3000;
 
-app.get('/', async (req: Request, res, Response) => {
+app.get('/', async (req: Request, res: Response) => {
   res.send(`<h1>IMAGE PROCESSING API GUIDE</h1>
   <h3>URL to display request guide:</h3>
   <code>http://localhost:3000/</code>
@@ -33,7 +33,9 @@ app.get(
   '/api/:imageName',
   [getFullImage, resizer, logger, getThumbImage],
   async (req: Request, res: Response) => {
-    res.sendFile(req.params.imageName, { root: path.dirname(req.params.imagePath) });
+    res.sendFile(req.params.imageName, {
+      root: path.dirname(req.params.imagePath)
+    });
   }
 );
 
