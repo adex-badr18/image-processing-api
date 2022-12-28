@@ -10,7 +10,12 @@ describe('Test endpoint responses', () => {
   });
 
   it('Called /api/:imageName the transforms the specified image.', async () => {
-    const response = await request.get('/api/fjord.jpg');
+    const response = await request.get('/api/fjord/?width=200&height=200');
     expect(response.status).toBe(200);
+  });
+
+  it('Respond with 404 if requested image cannot be found.', async () => {
+    const response = await request.get('/api/sammy/?width=200&height=200');
+    expect(response.status).toBe(404);
   });
 });

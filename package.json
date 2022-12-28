@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/express": "^4.17.15",
     "@types/jasmine": "^4.3.1",
+    "@types/node-fetch": "^2.6.2",
     "@types/probe-image-size": "^7.2.0",
     "@types/sharp": "^0.31.0",
     "@types/supertest": "^2.0.12",
@@ -47,6 +48,7 @@
     "jasmine-spec-reporter": "^7.0.0",
     "node": "^18.12.1",
     "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.7",
     "path": "^0.12.7",
     "sharp": "^0.31.2",
     "supertest": "^6.3.3",
