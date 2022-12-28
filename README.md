@@ -1,5 +1,3 @@
-# image-processing-api
-
 # Image Processing API
 
 This is an API program that transforms full-sized images into thumbnail images.
@@ -41,6 +39,14 @@ The entire application is developed with the following languages/frameworks:
 # REST API
 
 The REST API to the example app is described below.
+
+## API mini guide
+
+### Request
+
+`GET /`
+
+    http://localhost:3000/
 
 ## Get the name and path of all full-sized images located in the images directory
 
